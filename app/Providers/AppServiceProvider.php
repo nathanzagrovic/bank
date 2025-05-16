@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Support\TinkerHelper;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use App\Services\BankAccountService;
 use App\Models\User;
@@ -24,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        AliasLoader::getInstance()->alias('TinkerHelper', TinkerHelper::class);
     }
 }

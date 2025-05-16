@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('account_number');
-            $table->integer('balance')->default(0);
+            $table->decimal('balance', 15, 2)->default(0);
             $table->string('pin');
             $table->timestamps();
         });

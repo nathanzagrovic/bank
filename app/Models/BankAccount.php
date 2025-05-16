@@ -9,11 +9,16 @@ use Mockery\Expectation;
 
 class BankAccount extends Model
 {
-    protected $balance;
+    protected  $balance;
+    protected $pin;
 
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getPin() {
+        return $this->pin;
     }
 
 }
