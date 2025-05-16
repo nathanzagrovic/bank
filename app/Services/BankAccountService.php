@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Events\MoneyDeposited;
+use App\Events\TransferExecuted;
+use App\Events\WithdrawalExecuted;
 use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Models\User;
@@ -36,37 +38,59 @@ class BankAccountService
         return $pin === $this->bankAccount->getPin();
     }
 
-    public function transfer(BankAccount $recipient, int $amount)
+    public function transfer(BankAccount $recipient, int $amount) : bool
     {
-        if ($this->balanceCheck($amount)) {
-            DB::transaction(function($recipient, $amount) {
-                $this->bankAccount->balance -= $amount;
-                $recipient->balance += $amount;
+        try {
+            if ($this->balanceCheck($amount)) {
+                return DB::transaction(function() use ($recipient, $amount) {
 
-                $this->bankAccount->save();
-                $recipient->save();
+                    $this->bankAccount->decrement('balance', $amount);
+                    $recipient->increment('balance', $amount);
 
-                Log::info('Transfer executed', [
-                    'sender' => $this->bankAccount->user->name,
-                    'recipient' => $recipient->user->name,
-                    'amount' => $amount,
-                ]);
-            });
+                    Transaction::create([
+                        'bank_account_id' => $this->bankAccount->id,
+                        'type' => Transaction::TYPE_TRANSFER,
+                        'recipient_id' => $recipient->id,
+                        'amount' => $amount
+                    ]);
+
+                    TransferExecuted::dispatch($amount, $this);
+
+                    Log::info('Transfer executed', [
+                        'sender' => $this->bankAccount->user->name,
+                        'recipient' => $recipient->user->name,
+                        'amount' => $amount,
+                    ]);
+                    return true;
+                });
+            }
         }
+        catch (\Exception $e) {
+            Log::error('Transfer Failed', [
+                'bank_account_id' => $this->bankAccount->id,
+                'amount' => $amount,
+                'error' => $e->getMessage()
+            ]);
+        }
+        return false;
     }
 
     public function deposit(int $amount) : bool
     {
         try {
             return DB::transaction(function() use ($amount) {
+
                 $this->bankAccount->increment('balance', $amount);
+
                 Transaction::create([
                     'bank_account_id' => $this->bankAccount->id,
                     'type' => Transaction::TYPE_DEPOSIT,
                     'recipient_id' => $this->bankAccount->id,
                     'amount' => $amount
                 ]);
+
                 MoneyDeposited::dispatch($amount, $this);
+
                 return true;
             });
         }
@@ -86,13 +110,18 @@ class BankAccountService
         if ($this->balanceCheck($amount)) {
             try {
                 return DB::transaction(function() use ($amount) {
+
                     $this->bankAccount->decrement('balance', $amount);
+
                     Transaction::create([
                         'bank_account_id' => $this->bankAccount->id,
                         'type' => Transaction::TYPE_WITHDRAWAL,
                         'recipient_id' => $this->bankAccount->id,
                         'amount' => $amount
                     ]);
+
+                    WithdrawalExecuted::dispatch($amount, $this);
+
                     return true;
                 });
             }
@@ -102,7 +131,6 @@ class BankAccountService
                     'amount' => $amount,
                     'error' => $e->getMessage()
                 ]);
-                return false;
             }
         }
         return false;

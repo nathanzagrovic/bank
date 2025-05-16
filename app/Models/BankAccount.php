@@ -17,6 +17,7 @@ class BankAccount extends Model
         return $this->belongsTo(User::class);
     }
 
+    // TODO: Decrypt Pin
     public function getPin() {
         return $this->pin;
     }

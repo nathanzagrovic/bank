@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // TODO: Update to factories
+        //TODO: Update to factories
 
         User::create([
             'name' => 'Bill Smith',
