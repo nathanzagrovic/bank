@@ -7,8 +7,8 @@ use App\Events\TransferExecuted;
 use App\Events\WithdrawalExecuted;
 use App\Models\BankAccount;
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class BankAccountService
@@ -33,108 +33,82 @@ class BankAccountService
         return true;
     }
 
-    public function checkPin(int $pin) : bool
+    public function checkPin(string $pin) : bool
     {
-        return $pin === $this->bankAccount->getPin();
+        return Hash::check($pin, $this->getBankAccount()->pin);
     }
 
     public function transfer(BankAccount $recipient, int $amount) : bool
     {
-        try {
-            if ($this->balanceCheck($amount)) {
-                return DB::transaction(function() use ($recipient, $amount) {
-
-                    $this->bankAccount->decrement('balance', $amount);
-                    $recipient->increment('balance', $amount);
-
-                    Transaction::create([
-                        'bank_account_id' => $this->bankAccount->id,
-                        'type' => Transaction::TYPE_TRANSFER,
-                        'recipient_id' => $recipient->id,
-                        'amount' => $amount
-                    ]);
-
-                    TransferExecuted::dispatch($amount, $this);
-
-                    Log::info('Transfer executed', [
-                        'sender' => $this->bankAccount->user->name,
-                        'recipient' => $recipient->user->name,
-                        'amount' => $amount,
-                    ]);
-                    return true;
-                });
-            }
-        }
-        catch (\Exception $e) {
-            Log::error('Transfer Failed', [
-                'bank_account_id' => $this->bankAccount->id,
-                'amount' => $amount,
-                'error' => $e->getMessage()
-            ]);
-        }
+        $this->tryAction($this, $amount, 'transfer');
         return false;
     }
 
     public function deposit(int $amount) : bool
     {
-        try {
-            return DB::transaction(function() use ($amount) {
-
-                $this->bankAccount->increment('balance', $amount);
-
-                Transaction::create([
-                    'bank_account_id' => $this->bankAccount->id,
-                    'type' => Transaction::TYPE_DEPOSIT,
-                    'recipient_id' => $this->bankAccount->id,
-                    'amount' => $amount
-                ]);
-
-                MoneyDeposited::dispatch($amount, $this);
-
-                return true;
-            });
-        }
-        catch (\Exception $e) {
-            Log::error('Deposit Failed', [
-                'bank_account_id' => $this->bankAccount->id,
-                'amount' => $amount,
-                'error' => $e->getMessage()
-            ]);
-
-            return false;
-        }
+        return $this->tryAction($this, $amount, 'deposit');
     }
 
     public function withdraw(int $amount) : bool
     {
-        if ($this->balanceCheck($amount)) {
+        $this->tryAction($this, $amount, 'withdraw');
+        return false;
+
+    }
+
+    public function tryAction(BankAccountService $bankAccountService, $amount, string $type, $recipient = NULL)
+    {
+        if ($bankAccountService->balanceCheck($amount) || $type === 'deposit') {
             try {
-                return DB::transaction(function() use ($amount) {
-
-                    $this->bankAccount->decrement('balance', $amount);
-
-                    Transaction::create([
-                        'bank_account_id' => $this->bankAccount->id,
-                        'type' => Transaction::TYPE_WITHDRAWAL,
-                        'recipient_id' => $this->bankAccount->id,
-                        'amount' => $amount
-                    ]);
-
-                    WithdrawalExecuted::dispatch($amount, $this);
-
+                return DB::transaction(function() use ($bankAccountService, $recipient, $amount, $type) {
+                    switch ($type) {
+                        case 'transfer':
+                            $this->TransferLogic($amount, $recipient ?: $this->getBankAccount()->id);
+                            break;
+                        case 'withdraw':
+                            $this->withdrawLogic($amount, $recipient ?: $this->getBankAccount()->id);
+                            break;
+                        case 'deposit':
+                            $this->depositLogic($amount);
+                            break;
+                    }
                     return true;
                 });
             }
             catch(\Exception $e) {
-                Log::error('Withdrawal Failed', [
-                    'bank_account_id' => $this->bankAccount->id,
+                Log::error($type . ' failed', [
+                    'bank_account_id' => $bankAccountService->bankAccount->id,
                     'amount' => $amount,
                     'error' => $e->getMessage()
                 ]);
             }
         }
         return false;
-
     }
 
+    // TODO: Test transfer manually
+    protected function transferLogic(float $amount, BankAccount $recipient): true
+    {
+        $this->getBankAccount()->decrement('balance', $amount);
+        $recipient->increment('balance', $amount);
+        Transaction::persistTransaction($this->getBankAccount(), Transaction::TYPE_TRANSFER, $amount, $recipient);
+        TransferExecuted::dispatch($amount, $this);
+        return true;
+    }
+
+    protected function depositLogic(float $amount): void
+    {
+        $this->getBankAccount()->increment('balance', $amount);
+        Transaction::persistTransaction($this->getBankAccount(), Transaction::TYPE_DEPOSIT, $amount);
+        MoneyDeposited::dispatch($amount, $this);
+    }
+
+    // TODO: Test withdraw manually
+    protected function withdrawLogic(float $amount, BankAccount $recipient): true
+    {
+        $this->getBankAccount()->decrement('balance', $amount);
+        Transaction::persistTransaction($this->bankAccount, Transaction::TYPE_WITHDRAWAL, $amount);
+        WithdrawalExecuted::dispatch($amount, $this);
+        return true;
+    }
 }

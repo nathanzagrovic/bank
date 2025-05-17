@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('account_number');
             $table->decimal('balance', 15, 2)->default(0);
-            // TODO: Encrypt Pin
             $table->string('pin');
             $table->timestamps();
         });

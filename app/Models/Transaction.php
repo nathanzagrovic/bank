@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\BankAccountService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -23,5 +24,16 @@ class Transaction extends Model
     public function recipient() : belongsTo
     {
         return $this->belongsTo(BankAccount::class, 'recipient_id');
+    }
+
+    public static function persistTransaction(BankAccount $bankAccount, string $type, float $amount, BankAccount $recipient = NULL) : Transaction
+    {
+        return Transaction::create([
+            'bank_account_id' => $bankAccount->id,
+            'type' => $type,
+            'recipient_id' => $recipient,
+            'amount' => $amount
+        ]);
+
     }
 }

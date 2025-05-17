@@ -11,7 +11,7 @@ class LogTransaction
 {
     public function handle(MoneyDeposited|TransferExecuted|WithdrawalExecuted $event): void
     {
-        Log::info("{${$event->name}} executed", [
+        Log::info("{$event->name} executed", [
             'account' => $event->bankAccountService->getBankAccount()->id,
             'amount' => $event->amount,
             'new_balance' => $event->bankAccountService->getBankAccount()->balance,

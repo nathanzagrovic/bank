@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\BankAccount;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,14 +29,14 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1,
             'account_number'=> 1337,
             'balance' => 500,
-            'pin' => 1234,
+            'pin' => Hash::make('1234'),
         ]);
 
         BankAccount::create([
             'user_id' => 2,
             'account_number'=> 8271,
             'balance' => 200,
-            'pin' => 9541,
+            'pin' => Hash::make('9541'),
         ]);
     }
 }
