@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Support\TinkerHelper;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use App\Services\BankAccountService;
 use App\Models\User;
@@ -27,5 +29,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         AliasLoader::getInstance()->alias('TinkerHelper', TinkerHelper::class);
+
+        View::composer('*', function ($view) {
+            $user = Auth::user();
+
+            $bankBalance = null;
+
+            if ($user && $user->bankAccount) {
+                $bankBalance = $user->bankAccount->balance;
+            }
+
+            $view->with('bankBalance', $bankBalance);
+        });
     }
 }

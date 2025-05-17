@@ -86,7 +86,6 @@ class BankAccountService
         return false;
     }
 
-    // TODO: Test transfer manually
     protected function transferLogic(float $amount, BankAccount $recipient): true
     {
         $this->getBankAccount()->decrement('balance', $amount);
@@ -103,7 +102,6 @@ class BankAccountService
         MoneyDeposited::dispatch($amount, $this);
     }
 
-    // TODO: Test withdraw manually
     protected function withdrawLogic(float $amount, BankAccount $recipient): true
     {
         $this->getBankAccount()->decrement('balance', $amount);

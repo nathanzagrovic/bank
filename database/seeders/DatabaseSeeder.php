@@ -16,13 +16,13 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Bill Smith',
             'email' => 'bill@microsoft.com',
-            'password' => ''
+            'password' => Hash::make('password')
         ]);
 
         User::create([
             'name' => 'Sarah Graham',
             'email' => 'sarah@eso.com',
-            'password' => ''
+            'password' => Hash::make('password')
         ]);
 
         BankAccount::create([
