@@ -40,7 +40,7 @@ class BankAccountService
 
     public function transfer(BankAccount $recipient, int $amount) : bool
     {
-        $this->tryAction($this, $amount, 'transfer');
+        $this->tryAction($this, $amount, 'transfer', $recipient);
         return false;
     }
 
@@ -56,17 +56,17 @@ class BankAccountService
 
     }
 
-    public function tryAction(BankAccountService $bankAccountService, $amount, string $type, $recipient = NULL)
+    public function tryAction(BankAccountService $bankAccountService, $amount, string $type, BankAccount $recipient = NULL)
     {
         if ($bankAccountService->balanceCheck($amount) || $type === 'deposit') {
             try {
                 return DB::transaction(function() use ($bankAccountService, $recipient, $amount, $type) {
                     switch ($type) {
                         case 'transfer':
-                            $this->TransferLogic($amount, $recipient ?: $this->getBankAccount()->id);
+                            $this->transferLogic($amount, $recipient ?: $this->getBankAccount());
                             break;
                         case 'withdraw':
-                            $this->withdrawLogic($amount, $recipient ?: $this->getBankAccount()->id);
+                            $this->withdrawLogic($amount, $recipient ?: $this->getBankAccount());
                             break;
                         case 'deposit':
                             $this->depositLogic($amount);

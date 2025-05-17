@@ -31,7 +31,7 @@ class Transaction extends Model
         return Transaction::create([
             'bank_account_id' => $bankAccount->id,
             'type' => $type,
-            'recipient_id' => $recipient,
+            'recipient_id' => $recipient?->id,
             'amount' => $amount
         ]);
 
