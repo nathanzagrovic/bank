@@ -26,6 +26,11 @@ class Transaction extends Model
         return $this->belongsTo(BankAccount::class, 'recipient_id');
     }
 
+    public function getAmount(): string
+    {
+        return '£' . number_format((float)$this->amount, 2, '.', '');
+    }
+
     public static function persistTransaction(BankAccount $bankAccount, string $type, float $amount, BankAccount $recipient = NULL) : Transaction
     {
         return Transaction::create([

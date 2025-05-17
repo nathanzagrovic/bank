@@ -48,7 +48,6 @@ class User extends Authenticatable
 
     public function bankAccount() {
         return $this->hasOne(BankAccount::class);
-        
     }
 
 }

@@ -16,13 +16,13 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('deposit.index')" :active="request()->routeIs('deposit.index')">
                         {{ __('Deposit') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('withdraw.index')" :active="request()->routeIs('withdraw.index')">
                         {{ __('Withdraw') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('transfer.index')" :active="request()->routeIs('transfer.index')">
                         {{ __('Transfer') }}
                     </x-nav-link>
                 </div>
