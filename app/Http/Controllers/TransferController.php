@@ -2,24 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\HasBankAccountService;
 use App\Http\Requests\TransferPostRequest;
-use App\Models\BankAccount;
-use App\Services\BankAccountService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class TransferController extends Controller
 {
-    protected BankAccount $bankAccount;
-    public BankAccountService $bankAccountService;
+    use HasBankAccountService;
 
-    // TODO: Trait / abstract for constructor?
-
-    public function __construct(BankAccount $bankAccount)
+    public function __construct()
     {
-        $this->bankAccount = auth()->user()->bankAccount;
-        $this->bankAccountService = new BankAccountService($this->bankAccount);
+        $this->initBankAccountService();
     }
 
     public function index(): View
