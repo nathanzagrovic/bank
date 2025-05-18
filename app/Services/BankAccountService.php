@@ -38,7 +38,7 @@ class BankAccountService
         return Hash::check($pin, $this->getBankAccount()->pin);
     }
 
-    public function transfer(BankAccount $recipient, int $amount) : bool
+    public function transfer(BankAccount $recipient, float $amount) : bool
     {
         $this->tryAction($this, $amount, 'transfer', $recipient);
         return false;
@@ -49,11 +49,18 @@ class BankAccountService
         return $this->tryAction($this, $amount, 'deposit');
     }
 
-    public function withdraw(int $amount) : bool
+    public function withdraw(float $amount) : bool
     {
         $this->tryAction($this, $amount, 'withdraw');
         return false;
+    }
 
+    public function bankAccountLookup(int $identifier, $method = 'account_number') : BankAccount
+    {
+        return match ($method) {
+            'id' => BankAccount::find($identifier)->first(),
+            default =>  BankAccount::where('account_number', $identifier)->first(),
+        };
     }
 
     public function tryAction(BankAccountService $bankAccountService, float $amount, string $type, BankAccount $recipient = NULL)
