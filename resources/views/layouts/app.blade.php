@@ -10,7 +10,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-stone-950">
+        <div class="min-h-screen bg-stone-950 text-white">
             @include('layouts.navigation')
             <main>
                 {{ $slot }}

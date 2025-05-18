@@ -44,7 +44,7 @@ class BankAccountService
         return false;
     }
 
-    public function deposit(int $amount) : bool
+    public function deposit(float $amount) : bool
     {
         return $this->tryAction($this, $amount, 'deposit');
     }
@@ -56,9 +56,9 @@ class BankAccountService
 
     }
 
-    public function tryAction(BankAccountService $bankAccountService, $amount, string $type, BankAccount $recipient = NULL)
+    public function tryAction(BankAccountService $bankAccountService, float $amount, string $type, BankAccount $recipient = NULL)
     {
-        if ($bankAccountService->balanceCheck($amount) || $type === 'deposit') {
+        if ( $type === 'deposit' || $bankAccountService->balanceCheck($amount)) {
             try {
                 return DB::transaction(function() use ($bankAccountService, $recipient, $amount, $type) {
                     switch ($type) {
