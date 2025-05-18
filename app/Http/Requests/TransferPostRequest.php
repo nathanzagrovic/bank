@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Support\TinkerHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TransferPostRequest extends FormRequest
@@ -14,6 +15,16 @@ class TransferPostRequest extends FormRequest
         return true;
     }
 
+    public function messages(): array
+    {
+        return [
+            'amount.lte' => 'You do not have enough balance to make this transfer.',
+            'amount.regex' => 'The amount must be a valid number with up to two decimal places.',
+            'recipient_account_number.digits' => 'The recipient account number must be exactly 4 digits.',
+            'exists' => 'That account number does not exist. Please check it and try again'
+        ];
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -21,9 +32,23 @@ class TransferPostRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = auth()->user();
+        $bankAccount = $user->bankAccount;
+
         return [
-            'recipient_account_number' => ['required', 'int', "digits:4"],
-            'amount' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'recipient_account_number' => [
+                'required',
+                'integer',
+                'digits:4',
+                'exists:bank_accounts,account_number',
+            ],
+            'amount' => [
+                'required',
+                'numeric',
+                'lte:' . $bankAccount->balance,
+                'regex:/^\d+(\.\d{1,2})?$/',
+            ],
         ];
+
     }
 }

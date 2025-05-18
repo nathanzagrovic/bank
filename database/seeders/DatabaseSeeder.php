@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
 
         BankAccount::create([
             'user_id' => 2,
-            'account_number'=> 8271,
+            'account_number'=> 1234,
             'balance' => 200.00,
             'pin' => Hash::make('9541'),
         ]);

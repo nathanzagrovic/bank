@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\HasBankAccountService;
 use App\Http\Requests\DepositPostRequest;
 use App\Models\BankAccount;
 use App\Services\BankAccountService;
@@ -9,17 +10,16 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 
+// TODO: Trait / abstract for constructor?
+
 class DepositController extends Controller
 {
-    protected BankAccount $bankAccount;
-    public BankAccountService $bankAccountService;
 
-    // TODO: Trait / abstract for constructor?
+    use HasBankAccountService;
 
-    public function __construct(BankAccount $bankAccount)
+    public function __construct()
     {
-        $this->bankAccount = auth()->user()->bankAccount;
-        $this->bankAccountService = new BankAccountService($this->bankAccount);
+     $this->initBankAccountService();
     }
 
     public function index(): View

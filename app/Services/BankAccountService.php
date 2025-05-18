@@ -55,11 +55,12 @@ class BankAccountService
         return false;
     }
 
-    public function bankAccountLookup(int $identifier, $method = 'account_number') : BankAccount
+    public function bankAccountLookup(int $identifier, $method = 'account_number')
     {
         return match ($method) {
             'id' => BankAccount::find($identifier)->first(),
-            default =>  BankAccount::where('account_number', $identifier)->first(),
+            'account_number' =>  BankAccount::where('account_number', $identifier)->first(),
+            default => false,
         };
     }
 

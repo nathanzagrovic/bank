@@ -15,7 +15,7 @@ class DashboardController extends Controller
     }
 
     public function index() {
-        $transactions = $this->user->bankAccount->transactions()->limit(2)->get();
+        $transactions = $this->user->bankAccount->transactions()->orderBy('created_at', 'DESC')->limit(6)->get();
         return view('dashboard', compact('transactions'));
     }
 

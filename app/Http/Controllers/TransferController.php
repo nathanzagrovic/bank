@@ -31,8 +31,16 @@ class TransferController extends Controller
     {
         $validated = $request->validated();
         $recipient = $this->bankAccountService->bankAccountLookup($validated['recipient_account_number']);
-        $this->bankAccountService->transfer($recipient, $validated['amount']);
-        return Redirect::route('transfer.index')->with('status', 'success');
+
+        if($recipient) {
+            $status = 'success';
+            $this->bankAccountService->transfer($recipient, $validated['amount']);
+        } else {
+            $status = 'failure';
+        }
+
+
+        return Redirect::route('transfer.index')->with('status', $status);
     }
 
 }

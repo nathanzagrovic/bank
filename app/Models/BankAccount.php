@@ -18,9 +18,12 @@ class BankAccount extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function transactions(): HasMany
+    public function transactions()
     {
-        return $this->hasMany(Transaction::class, 'bank_account_id', 'id');
+        return Transaction::where(function ($query) {
+            $query->where('bank_account_id', $this->id)
+                ->orWhere('recipient_id', $this->id);
+        });
     }
 
     public function getBalance(): string

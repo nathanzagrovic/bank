@@ -14,6 +14,14 @@ class WithdrawPostRequest extends FormRequest
         return true;
     }
 
+    public function messages(): array
+    {
+        return [
+            'amount.lte' => 'You do not have enough balance to make this transfer.',
+            'amount.regex' => 'The amount must be a valid number with up to two decimal places, no currency symbol.',
+        ];
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -21,8 +29,16 @@ class WithdrawPostRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = auth()->user();
+        $bankAccount = $user->bankAccount;
+
         return [
-            'amount' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'amount' => [
+                'required',
+                'numeric',
+                'lte:' . $bankAccount->balance,
+                'regex:/^\d+(\.\d{1,2})?$/'
+            ],
         ];
     }
 }
