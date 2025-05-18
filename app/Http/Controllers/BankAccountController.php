@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BankAccount;
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Services\BankAccountService;
-use Illuminate\View\View;
+use App\Http\Controllers\Traits\HasBankAccountService;
 
 class BankAccountController extends Controller
 {
+    use HasBankAccountService;
 
+    public function __construct()
+    {
+        $this->initBankAccountService();
+    }
+
+    public function pinCheck() {
+        dd($this->bankAccountService->getBankAccount());
+    }
 }
