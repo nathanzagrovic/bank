@@ -81,7 +81,7 @@
                                 {{ $transaction->getAmount() }}
                             </td>
                             <td class="px-4 py-2 text-right">
-                                {{ $transaction->created_at->format('d/m/y H:m')  }}
+                                {{ $transaction->created_at->format('d/m/y')  }}
                             </td>
                         </tr>
                     @endforeach
