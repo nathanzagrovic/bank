@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use App\Services\BankAccountService;
-use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {

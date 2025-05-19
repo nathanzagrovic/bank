@@ -33,6 +33,10 @@ class BankAccountService
         return true;
     }
 
+    public function getUser() {
+        return $this->getBankAccount()->user;
+    }
+
     public function checkPin(string $pin) : bool
     {
         return Hash::check($pin, $this->getBankAccount()->pin);
