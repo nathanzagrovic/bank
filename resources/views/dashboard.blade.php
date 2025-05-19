@@ -62,7 +62,7 @@
                             <span class="font-bold text-white">Amount</span>
                         </th>
                         <th scope="col" class="px-4 py-3 text-right">
-                            <span class="font-bold text-white">Date / Time</span>
+                            <span class="font-bold text-white">Date</span>
                         </th>
                     </tr>
                     </thead>
