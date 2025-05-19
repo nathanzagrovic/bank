@@ -34,7 +34,7 @@ A simple Laravel-based banking application that provides core banking functional
 
 ### 📚 Code Overview / Methodologies
 - OOP Approach
-- SOLID princibles
+- SOLID principles
 - Traits
 - Service classes
 - Service container binding
