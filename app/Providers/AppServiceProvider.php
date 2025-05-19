@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
     $this->app->bind(BankAccountService::class, function ($app) {
-        $user = User::find(1); // or ideally get the logged-in user
+        $user = auth()->id();
         return new BankAccountService($user->bankAccount);
     });
     }
