@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\HasBankAccountService;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class BankAccountController extends Controller
 {
@@ -13,7 +16,10 @@ class BankAccountController extends Controller
         $this->initBankAccountService();
     }
 
-    public function pinCheck() {
-        dd($this->bankAccountService->getBankAccount());
+    public function pinCheck(Request $request): Response
+    {
+        return response([
+            'success' => $this->bankAccountService->checkPin($request->get('pin'))
+        ]);
     }
 }
