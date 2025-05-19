@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Events\MoneyDeposited;
+use App\Events\DepositExecuted;
 use App\Events\TransferExecuted;
 use App\Events\WithdrawalExecuted;
 use App\Models\BankAccount;
@@ -111,7 +111,7 @@ class BankAccountService
     {
         $this->getBankAccount()->increment('balance', $amount);
         Transaction::persistTransaction($this->getBankAccount(), Transaction::TYPE_DEPOSIT, $amount);
-        MoneyDeposited::dispatch($amount, $this);
+        DepositExecuted::dispatch($amount, $this);
     }
 
     protected function withdrawLogic(float $amount, BankAccount $recipient): true

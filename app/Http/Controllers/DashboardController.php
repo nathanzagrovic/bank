@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {

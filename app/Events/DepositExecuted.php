@@ -8,7 +8,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Services\BankAccountService;
 
-class MoneyDeposited
+class DepositExecuted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
