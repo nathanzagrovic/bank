@@ -11,27 +11,19 @@ use App\Services\BankAccountService;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-    $this->app->bind(BankAccountService::class, function ($app) {
-        $user = auth()->id();
-        return new BankAccountService($user->bankAccount);
-    });
+        $this->app->bind(BankAccountService::class, function ($app) {
+            $user = auth()->id();
+            return new BankAccountService($user->bankAccount);
+        });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         AliasLoader::getInstance()->alias('TinkerHelper', TinkerHelper::class);
-
         View::composer('*', function ($view) {
             $user = Auth::user();
-
             $bankBalance = null;
 
             if ($user && $user->bankAccount) {
