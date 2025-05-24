@@ -78,7 +78,7 @@ class BankAccountService
                             $this->transferLogic($amount, $recipient ?: $this->getBankAccount());
                             break;
                         case 'withdraw':
-                            $this->withdrawLogic($amount, $recipient ?: $this->getBankAccount());
+                            $this->withdrawLogic($amount);
                             break;
                         case 'deposit':
                             $this->depositLogic($amount);
@@ -114,7 +114,7 @@ class BankAccountService
         DepositExecuted::dispatch($amount, $this);
     }
 
-    protected function withdrawLogic(float $amount, BankAccount $recipient): true
+    protected function withdrawLogic(float $amount): true
     {
         $this->getBankAccount()->decrement('balance', $amount);
         Transaction::persistTransaction($this->bankAccount, Transaction::TYPE_WITHDRAWAL, $amount);
