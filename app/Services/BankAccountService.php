@@ -107,11 +107,12 @@ class BankAccountService
         return true;
     }
 
-    protected function depositLogic(float $amount): void
+    protected function depositLogic(float $amount): true
     {
         $this->getBankAccount()->increment('balance', $amount);
         Transaction::persistTransaction($this->getBankAccount(), Transaction::TYPE_DEPOSIT, $amount);
         DepositExecuted::dispatch($amount, $this);
+        return true;
     }
 
     protected function withdrawLogic(float $amount): true
