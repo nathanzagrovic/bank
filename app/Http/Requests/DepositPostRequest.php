@@ -15,7 +15,7 @@ class DepositPostRequest extends FormRequest
     public function rules(Request $request): array
     {
         return [
-            'amount' => ['required'],
+            'amount' => ['required', 'numeric'],
         ];
     }
 }
