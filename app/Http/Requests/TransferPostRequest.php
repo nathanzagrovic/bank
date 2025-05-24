@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Support\TinkerHelper;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TransferPostRequest extends FormRequest
@@ -30,7 +30,7 @@ class TransferPostRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(Request $request): array
     {
         $user = auth()->user();
         $bankAccount = $user->bankAccount;
@@ -46,7 +46,7 @@ class TransferPostRequest extends FormRequest
                 'required',
                 'numeric',
                 'lte:' . $bankAccount->balance,
-                'regex:/^\d+(\.\d{1,2})?$/',
+                'regex:/^\d+(\.\d{1,2})?$/'
             ],
         ];
 

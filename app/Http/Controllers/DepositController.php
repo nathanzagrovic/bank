@@ -24,9 +24,9 @@ class DepositController extends Controller
 
     public function create(DepositPostRequest $request) : RedirectResponse
     {
-        $validated = $request->validated();;
-        $this->bankAccountService->deposit($validated['amount']);
+        $validated = $request->validated();
+        $amount = (float) $validated['amount'];
+        $this->bankAccountService->deposit($amount);
         return Redirect::route('deposit.index')->with('status', 'success');
-
     }
 }
