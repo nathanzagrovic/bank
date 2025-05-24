@@ -1,7 +1,6 @@
 <section>
     <form id="accountLookupForm" onsubmit="validateAccount(event)" method="post" action="/" class="mt-6 space-y-6">
         @csrf
-
         <div class="relative">
             <x-input-label for="recipient_lookup" :value="__('Bank Account Number')" />
             <x-text-input id="recipient_lookup" name="recipient_lookup" placeholder="1234" type="text" class="mt-1 block w-full " :value="old('recipient_lookup')" required autofocus/>
@@ -11,18 +10,6 @@
 
         <div id="lookUpBtn">
             <x-primary-button>{{ __('Lookup') }}</x-primary-button>
-        </div>
-
-        <div class="flex items-center gap-4">
-            @if (session('status') === 'success')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-teal-500"
-                >{{ __('Transfer successful.') }}</p>
-            @endif
         </div>
     </form>
     <form method="post" onsubmit="displayPinCheck(event)" action="{{ route('transfer.create') }}" class="mt-6 space-y-6">
@@ -35,7 +22,7 @@
         <div id="sendBtn" onclick="displayPinCheck(event);">
         </div>
 
-        <div class="relative">
+        <div class="relative" style="display:none;">
             <x-input-label for="recipient_account_number" :value="__('Bank Account Number')" />
             <x-text-input id="recipient_account_number" name="recipient_account_number" placeholder="1234" type="text" class="mt-1 block w-full " :value="old('recipient_account_number')" required autofocus/>
         </div>
@@ -43,8 +30,10 @@
         <x-input-error class="mt-2" :messages="$errors->get('amount')" />
         <x-input-error class="mt-2" :messages="$errors->get('recipient_account_number')" />
 
-        <x-primary-button>{{ __('Send') }}</x-primary-button>
-
+        <x-primary-button onclick="this.classList.add('hidden')">
+            {{ __('Send') }}
+        </x-primary-button>
+        
         <div class="flex items-center gap-4">
             @if (session('status') === 'success')
                 <p
