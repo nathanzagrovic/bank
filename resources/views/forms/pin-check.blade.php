@@ -31,6 +31,7 @@
 
     function displayPinCheck(e) {
         e.preventDefault();
+
         const pinCheckForm = document.getElementById('pinCheck');
         pinCheckForm.style.display = 'grid';
     }
@@ -49,22 +50,19 @@
 
     function pinAttemptFailure(event) {
         const form = event.srcElement;
-        console.log(form);
+        const errorMessage = form.querySelector('[data-section="form-errors"]');
         const input = form.querySelector('#pin');
         input.value = '';
-        const errorMessage = form.querySelector('[data-section="form-errors"]');
         errorMessage.style.display = 'block';
         input.classList.add('!border-red-700');
     }
 
     function pinCheck(event) {
         event.preventDefault();
-
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const pinCheckForm = event.target.closest('form');
         const formData = new FormData(pinCheckForm);
         const loadingSpinner = event.target.querySelector('.loadingSpinner');
-
         initNumeric();
 
         fetch('/pin-check', {
