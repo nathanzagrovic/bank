@@ -15,8 +15,8 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-teal-500"
-                >{{ __('Withdrawal successful.') }}</p>
+                    class="text-sm white"
+                >{{ __('✅ Withdrawal successful.') }}</p>
             @endif
         </div>
     </form>

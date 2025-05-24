@@ -1,6 +1,6 @@
-
 <div id="pinCheck" style="display: none" class="fixed inset-0 bg-black/90 grid items-center h-full w-full">
-    <div class="max-w-xl w-full mx-auto border border-stone-800 p-10">
+    <div class="max-w-xl w-full mx-auto border border-stone-800 p-10 relative">
+        <div class="absolute top-2 right-2 z-10 color-white hover:text-red-600 cursor-pointer" onclick="document.getElementById('pinCheck').style.display = 'none'">✕</div>
         <span class="block text-xl font-bold">Security Check</span>
         <form onsubmit="pinCheck(event)" action="{{ route('security.pin') }}" method="POST" class="w-full space-y-6">
         @csrf

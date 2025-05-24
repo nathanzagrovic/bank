@@ -8,16 +8,15 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
-
+            <x-primary-button>{{ __('Deposit') }}</x-primary-button>
             @if (session('status') === 'success')
                 <p
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-teal-500"
-                >{{ __('Deposit successful.') }}</p>
+                    class="text-sm text-white"
+                >{{ __('✅ Deposit successful.') }}</p>
             @endif
         </div>
     </form>

@@ -22,8 +22,8 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-teal-500"
-                >{{ __('Transfer successful.') }}</p>
+                    class="text-sm text-white"
+                >{{ __('✅ Transfer successful.') }}</p>
             @endif
         </div>
 
