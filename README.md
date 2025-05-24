@@ -1,6 +1,6 @@
 ## 🏦 Laramint | Laravel Banking App
 
-A simple Laravel-based banking application that provides core banking functionalities, including user authentication, deposits, withdrawals, and transfers between user accounts.
+A simple Laravel-based banking application that provides core banking functionalities, including user user & pin authentication, deposits, withdrawals, and transfers between user accounts.
 
 ![Alt text](https://i.ibb.co/CptHNWXR/SCR-20250524-sxqt.png)
 
@@ -44,6 +44,7 @@ Account Number: 1234
 - Register, login, logout using Laravel Breeze
 - Secure password hashing and session handling
 - Banking Operations
+- Secure pin authentication
 - Deposit: Add funds to your account
 - Withdraw: Remove funds from your account (with balance checks)
 - Transfer: Send money to another user's account (with validations)
@@ -71,3 +72,4 @@ Account Number: 1234
 - Basic exception handling  
 - Model relationships  
 - Tinker helper classes
+- AJAX Requests
