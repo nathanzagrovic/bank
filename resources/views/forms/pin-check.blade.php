@@ -2,14 +2,10 @@
     @csrf
     <div class="relative">
         <x-input-label for="pin" :value="__('Pin number')" />
-        <x-text-input id="pin" minlength="4" maxlength="4" name="pin" placeholder="Pin number" type="text" class="mt-1 block w-full" :value="old('pin')" required autofocus/>
+        <x-text-input id="pin" minlength="4" maxlength="4" name="pin" placeholder="Pin number" type="text" class="mt-1 block w-full" :value="old('pin')" required autocomplete="off" autofocus/>
         <small data-section="form-errors" class="hidden text-red-600 text-sm my-1">You have entered an incorrect pin, please try again.</small>
         <x-input-error class="mt-2" :messages="$errors->get('pin')" />
-        <div id="loadingSpinner" class="hidden absolute top-[16px] right-2 items-center gap-1.5 text-gray-300">
-            <div class="spinner"></div>
-            <span class="text-sm tracking-wide text-gray-100">Checking Pin..</span>
-        </div>
-
+        @include('elements.spinner')
     </div>
     <div class="flex items-center gap-4">
         <x-primary-button>{{ __('Submit') }}</x-primary-button>
@@ -32,7 +28,14 @@
     }
 
     function pinAttemptSuccessful() {
-        const form = document.getElementById('formWrapper').querySelector('form');
+        const form = document.querySelector('#formWrapper form:not(#accountLookupForm)');
+        const hiddenAmount = document.getElementById('amount');
+        const rawValue = window.anAmount.getNumber();
+
+        if(hiddenAmount && rawValue) {
+            hiddenAmount.value = rawValue;
+        }
+
         form.submit();
     }
 
@@ -52,7 +55,9 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const pinCheckForm = event.target.closest('form');
         const formData = new FormData(pinCheckForm);
-        const loadingSpinner = document.getElementById('loadingSpinner');
+        const loadingSpinner = event.target.querySelector('.loadingSpinner');
+
+        initNumeric();
 
         fetch('/pin-check', {
             method: 'POST',

@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        @apply appearance-none m-0;
+    }
+
+    input[type="number"] {
+        @apply [appearance:textfield];
+    }
+}
+
+input:disabled, input:read-only {
+    @apply bg-[#1a1717] cursor-not-allowed text-[#666666] border-[#333333] opacity-90;
+}

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class WithdrawPostRequest extends FormRequest
 {
@@ -27,8 +28,9 @@ class WithdrawPostRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(Request $request): array
     {
+        //dd($request->all());
         $user = auth()->user();
         $bankAccount = $user->bankAccount;
 

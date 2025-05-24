@@ -21,7 +21,7 @@ class BankAccountController extends Controller
     public function accountCheck(Request $request) : JsonResponse
     {
         $exists = false;
-        $accountNumber = $request->get('recipient_account_number') ?: $request->get('account_number');
+        $accountNumber = $request->get('recipient_lookup') ?: $request->get('account_number');
 
         if($accountNumber) {
             $exists = BankAccount::where('account_number', $accountNumber)->exists();

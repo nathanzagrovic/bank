@@ -25,15 +25,15 @@ class TransferController extends Controller
     public function create(TransferPostRequest $request) : RedirectResponse
     {
         $validated = $request->validated();
+        $amount = (float) $validated['amount'];
         $recipient = $this->bankAccountService->bankAccountLookup($validated['recipient_account_number']);
 
         if($recipient) {
             $status = 'success';
-            $this->bankAccountService->transfer($recipient, $validated['amount']);
+            $this->bankAccountService->transfer($recipient, $amount);
         } else {
             $status = 'failure';
         }
-
 
         return Redirect::route('transfer.index')->with('status', $status);
     }

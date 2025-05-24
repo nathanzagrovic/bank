@@ -1,24 +1,53 @@
 <section>
-    <form onsubmit="validateAccount(event)" method="post" action="{{ route('transfer.create') }}" class="mt-6 space-y-6">
+    <form id="accountLookupForm" onsubmit="validateAccount(event)" method="post" action="/" class="mt-6 space-y-6">
         @csrf
 
-        <div>
-            <x-input-label for="recipient_account_number" :value="__('Bank Account Number')" />
-            <x-text-input id="recipient_account_number" name="recipient_account_number" placeholder="1234" type="text" class="mt-1 block w-full" :value="old('amount')" required autofocus/>
-            <x-input-error class="mt-2" :messages="$errors->get('recipient_account_number')" />
-            <div id="message" class="mt-1 text-sm tracking-wide font-medium"></div>
-        </div>
-
-
-        <div style="display: none">
-            <x-input-label for="amount" :value="__('Amount (£)')" />
-            <x-text-input id="amount" disabled name="amount" placeholder="0.00" type="text" class="mt-1 block w-full" :value="old('amount')" required autofocus/>
-            <x-input-error class="mt-2" :messages="$errors->get('amount')" />
+        <div class="relative">
+            <x-input-label for="recipient_lookup" :value="__('Bank Account Number')" />
+            <x-text-input id="recipient_lookup" name="recipient_lookup" placeholder="1234" type="text" class="mt-1 block w-full " :value="old('recipient_lookup')" required autofocus/>
+            <x-input-error class="mt-2" :messages="$errors->get('recipient_lookup')" />
+            @include('elements.spinner')
         </div>
 
         <div id="lookUpBtn">
             <x-primary-button>{{ __('Lookup') }}</x-primary-button>
         </div>
+
+        <div class="flex items-center gap-4">
+            @if (session('status') === 'success')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-teal-500"
+                >{{ __('Transfer successful.') }}</p>
+            @endif
+        </div>
+    </form>
+    <form method="post" onsubmit="displayPinCheck(event)" action="{{ route('transfer.create') }}" class="mt-6 space-y-6">
+
+        @csrf
+        <x-input-label for="amount" :value="__('Amount (£)')" />
+
+        <x-text-input id="amount" name="amount" placeholder="0.00" type="text" class="mt-1 block w-full | type-currency" :value="old('amount')" required autofocus/>
+        <x-input-error class="mt-2" :messages="$errors->get('amount')" />
+        <div id="sendBtn" onclick="displayPinCheck(event);">
+        </div>
+
+        <div class="relative">
+            <x-input-label for="recipient_account_number" :value="__('Bank Account Number')" />
+            <x-text-input id="recipient_account_number" name="recipient_account_number" placeholder="1234" type="text" class="mt-1 block w-full " :value="old('recipient_account_number')" required autofocus/>
+            <x-text-input id="hidden_amount" name="hidden_amount" type="text" class="mt-1 block w-full " :value="old('hidden_amount')"/>
+        </div>
+
+
+
+        <x-input-error class="mt-2" :messages="$errors->get('amount')" />
+        <x-input-error class="mt-2" :messages="$errors->get('recipient_account_number')" />
+
+
+        <x-primary-button>{{ __('Send') }}</x-primary-button>
 
 
         <div class="flex items-center gap-4">
@@ -33,21 +62,24 @@
             @endif
         </div>
     </form>
-</section>
+    </div>
 
-<br>
+@include('forms.pin-check')
+</section>
 
 <script>
     function validateAccount(event) {
 
         event.preventDefault();
-
         const accountCheckForm = event.target.closest('form');
         const formData = new FormData(accountCheckForm);
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const loadingSpinner = document.getElementById('loadingSpinner');
+        const loadingSpinner = event.target.querySelector('.loadingSpinner');
+        const messageContainer = document.getElementById('message');
+        const recipientAccountNumber = document.getElementById('recipient_account_number');
 
-        console.log(accountCheckForm, formData);
+        recipientAccountNumber.style.borderColor = '';
+        messageContainer.innerText = '';
 
         fetch('/account-check', {
             method: 'POST',
@@ -64,30 +96,43 @@
                 return response.json();
             })
             .then(data => {
-                const messageContainer = document.getElementById('message');
-                const message = data.exists ? 'Account Found' : 'That account number does not exist. Please check it and try again';
-                const colorClass = data.exists ? 'text-green-600' : 'text-red-600';
-                const amount = document.getElementById('amount');
-                const lookUpBtn = document.getElementById('lookUpBtn');
-
-                if(data.exists) {
-                    amount.removeAttribute('disabled');
-                    lookUpBtn.style.display = 'none'
-                    displayPinCheck(event);
-                } else {
-                    amount.setAttribute('disabled', '');
-                    lookUpBtn.style.display = 'block'
-                }
-
-                amount.parentElement.style.display = data.exists ? 'block' : 'none';
-                messageContainer.classList.remove('text-green-600', 'text-red-600');
-                messageContainer.innerText = message;
-                messageContainer.classList.add(colorClass);
+                const message = data.exists ? '✅ Account Found' : '❌ That account number does not exist. Please check it and try again';
+                setTimeout(function () {
+                    messageContainer.innerText = message;
+                    loadingSpinner.style.display = 'none';
+                    data.exists ? accountExists()  : accountNotFound();
+                }, 1200);
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
             });
     }
-</script>
 
-@include('forms.pin-check')
+    function accountExists() {
+        const amount = document.getElementById('amount');
+        const lookUpBtn = document.getElementById('lookUpBtn');
+        const recipientLookup = document.getElementById('recipient_lookup');
+        const recipientAccountNumber  = document.getElementById('recipient_account_number');
+
+        if (recipientLookup && recipientAccountNumber) {
+            recipientAccountNumber.value = recipientLookup.value;
+            recipientLookup.addEventListener('input', () => {
+                recipientAccountNumber.value = recipientLookup.value;
+            });
+        }
+
+        lookUpBtn.style.display = 'none';
+        amount.closest('form').style.display = 'block';
+        recipientLookup.style.borderColor = '';
+        recipientLookup.setAttribute('readonly', 'true');
+    }
+
+    function accountNotFound() {
+        const amount = document.getElementById('amount');
+        const recipientLookup = document.getElementById('recipient_lookup');
+        recipientLookup.style.borderColor = 'red';
+        amount.closest('form').style.display = 'none';
+    }
+
+
+</script>

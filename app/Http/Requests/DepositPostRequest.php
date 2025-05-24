@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class DepositPostRequest extends FormRequest
 {
@@ -11,10 +12,10 @@ class DepositPostRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(Request $request): array
     {
         return [
-            'amount' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'amount' => ['required'],
         ];
     }
 }
