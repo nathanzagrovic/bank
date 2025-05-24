@@ -1,11 +1,11 @@
 <section>
-    <form id="accountLookupForm" onsubmit="validateAccount(event)" method="post" action="/" class="mt-6 space-y-6">
+    <form id="accountLookupForm" onsubmit="validateAccount(event)" method="post" class="mt-6 space-y-6">
         @csrf
         <div class="relative">
             <x-input-label for="recipient_lookup" :value="__('Bank Account Number')" />
             <x-text-input id="recipient_lookup" name="recipient_lookup" placeholder="1234" type="text" class="mt-1 block w-full " :value="old('recipient_lookup')" required autofocus/>
             <x-input-error class="mt-2" :messages="$errors->get('recipient_lookup')" />
-            @include('elements.spinner')
+            @include('elements.spinner', ['message' => 'Looking up account'])
         </div>
 
         <div id="lookUpBtn">
