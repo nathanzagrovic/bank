@@ -44,7 +44,7 @@ Account Number: 1234
 - Register, login, logout using Laravel Breeze
 - Secure password hashing and session handling
 - Banking Operations
-- Secure pin authentication
+- Secure pin authentication and hashing
 - Deposit: Add funds to your account
 - Withdraw: Remove funds from your account (with balance checks)
 - Transfer: Send money to another user's account (with validations)
@@ -58,7 +58,7 @@ Account Number: 1234
 - Breeze for auth scaffolding
 
 ### 📚 Code Overview / Methodologies
-- OOP Approach  
+- OOP approach  
 - SOLID principles  
 - Traits  
 - Service classes  
@@ -66,10 +66,10 @@ Account Number: 1234
 - Dependency injection  
 - Events / Listeners  
 - Unit & Feature testing  
-- Form Requests / Validation classes  
+- Form Requests / validation classes  
 - View composers  
 - Database seeding  
 - Basic exception handling  
 - Model relationships  
 - Tinker helper classes
-- AJAX Requests
+- AJAX requests
