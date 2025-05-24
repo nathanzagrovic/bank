@@ -38,17 +38,12 @@
         <div class="relative">
             <x-input-label for="recipient_account_number" :value="__('Bank Account Number')" />
             <x-text-input id="recipient_account_number" name="recipient_account_number" placeholder="1234" type="text" class="mt-1 block w-full " :value="old('recipient_account_number')" required autofocus/>
-            <x-text-input id="hidden_amount" name="hidden_amount" type="text" class="mt-1 block w-full " :value="old('hidden_amount')"/>
         </div>
-
-
 
         <x-input-error class="mt-2" :messages="$errors->get('amount')" />
         <x-input-error class="mt-2" :messages="$errors->get('recipient_account_number')" />
 
-
         <x-primary-button>{{ __('Send') }}</x-primary-button>
-
 
         <div class="flex items-center gap-4">
             @if (session('status') === 'success')
