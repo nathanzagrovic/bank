@@ -4,7 +4,7 @@
 
         <div>
             <x-input-label for="recipient_account_number" :value="__('Bank Account Number')" />
-            <x-text-input id="recipient_account_number" name="recipient_account_number" placeholder="1234" type="text" class="mt-1 block w-full" :value="old('amount')" required autofocus/>
+            <x-text-input id="recipient_account_number" name="recipient_account_number" placeholder="1234" type="text" class="mt-1 block w-full" :value="old('recipient_account_number')" required autofocus/>
             <x-input-error class="mt-2" :messages="$errors->get('recipient_account_number')" />
         </div>
 
