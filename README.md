@@ -1,6 +1,6 @@
 ## 🏦 Laramint | Laravel Banking App
 
-A simple Laravel-based banking application that provides core banking functionalities, including user user & pin authentication, deposits, withdrawals, and transfers between user accounts.
+A simple Laravel-based banking application that provides core banking functionalities, including user & pin authentication, deposits, withdrawals, and transfers between user accounts.
 
 ![Alt text](https://i.ibb.co/CptHNWXR/SCR-20250524-sxqt.png)
 
